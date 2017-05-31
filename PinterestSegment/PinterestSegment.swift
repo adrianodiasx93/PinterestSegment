@@ -17,6 +17,7 @@ public struct PinterestSegmentStyle {
     public var titleFont = UIFont.boldSystemFont(ofSize: 14)
     public var normalTitleColor = UIColor.lightGray
     public var selectedTitleColor = UIColor.darkGray
+    public var shouldUseGreaterWidth = false
     public init() {}
 }
 
@@ -170,9 +171,15 @@ extension PinterestSegment {
             return (text as NSString).boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: 0.0), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font], context: nil).width
         }
 
+        var greaterTitleW: CGFloat = 0
+        for title in titles {
+            let titleW = toToSize(title) + style.titlePendingHorizontal * 2
+            if titleW > greaterTitleW { greaterTitleW = titleW }
+        }
+
         for (index, title) in titles.enumerated() {
 
-            let titleW = toToSize(title) + style.titlePendingHorizontal * 2
+            let titleW = style.shouldUseGreaterWidth ? greaterTitleW : toToSize(title) + style.titlePendingHorizontal * 2
             titleX = (titleLabels.last?.frame.maxX ?? 0 ) + style.titleMargin
             let rect = CGRect(x: titleX, y: titleY, width: titleW, height: titleH)
 
